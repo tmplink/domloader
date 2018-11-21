@@ -40,7 +40,7 @@ domloader的核心功能需要jQuery支持才能实现，因此在使用domloade
 <script src="domloader.js"></script>
 ````
 
-在页面的<head></head>部分加入domload的执行代码，以确保domloader可以优先运行。  
+通常建议在页面的head部分加入domload的执行代码，以确保domloader可以优先运行。  
 domloader会在页面准备就绪时自动执行设定的加载指令。
 
 ```javascript
