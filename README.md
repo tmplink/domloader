@@ -66,9 +66,14 @@ domloader.html(dom,path);
 
 加载CSS和JS文件  
 对于CSS文件，domloader会按顺序将其插入到head的尾部，以外部样式表的方式。  
-而对于JS文件，domloader会按顺序下载好JS的内容后，以<script>...</script>的方式，插入到body的尾部。   
+而对于JS文件，domloader会按顺序下载好JS的内容后，以script标签内嵌的方式，将js内容插入到body的尾部。   
 ```javascript
 domloader.css(path);
 domloader.js(path);
 ```
 
+设置加载页面的icon    
+如果你不设置这个，那么在加载时只会显示进度条   
+```javascript
+domloader.icon = '/yourlogo.png';
+```
