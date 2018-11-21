@@ -15,6 +15,10 @@ domloader是一个模版加载对象。
 * 可以设置一个加载进度界面的图标（可以是你网站的Logo）
 * 加载时显示进度条
 
+<p align="center">
+<img src="https://github.com/tmplink/domloader/blob/master/demo.png?raw=true"/>
+</p>
+
 # 队列加载
 为了确保页面功能不混乱，domloader会队列加载预设的内容（浏览器通常是并发加载页面资源）。   
 这种方式在首次访问时可能会稍微降低页面的加载速度，而在之后瞬间完成。  
