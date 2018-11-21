@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v1.0
+ * v1.1
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -60,6 +60,7 @@ var domloader = {
         }
         if (this.queue.length === 0) {
             if (this.progressbar === false) {
+                $('body').css('overflow','');
                 $('#domloader_loading_bg').fadeOut();
                 $('#domloader_loading_show').fadeOut();
             }
@@ -67,6 +68,7 @@ var domloader = {
             if (this.progressbar) {
                 this.total = this.queue.length;
                 this.progressbar = false;
+                $('body').css('overflow','hidden');
                 $('#domloader_loading_bg').show();
                 $('#domloader_loading_show').show();
             }
@@ -79,7 +81,7 @@ var domloader = {
 
     init: function () {
         window.onload = function () {
-            $('body').append('<div id="domloader_loading_bg" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(255, 255, 255);z-index: 15000;"></div>');
+            $('body').append('<div id="domloader_loading_bg" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: white;z-index: 15000;"></div>');
             $('body').append('<div id="domloader_loading_show" style="color: black;;z-index: 15001;width: 200px; height: 200px;position: absolute; left: 0;top: 0;right: 0;bottom: 0; margin: auto;"></div>');
             if(domloader.icon!==false){
                 $('#domloader_loading_show').append('<div style="text-align:center;margin-bottom:20px;"><img src="'+domloader.icon+'" /></div>');
