@@ -1,5 +1,10 @@
+<p align="center">
+<img src="https://github.com/tmplink/domloader/blob/master/images/struct.png?raw=true"/>
+</p>
+
 # 概述
-domloader是一个模版加载对象。  
+domloader是一个模版加载小工具，帮助你简单地构建前后端分离的web前端程序。  
+无需太多复杂的学习成本，看完本页即可上手，甚至可以立即应用到你现有的项目。  
 你可以像使用其他混合html的后端语言一样，对你的前端项目文件进行模块化处理。   
 比如将页头和页脚与页面主体内容单独抽取出来，形成模块，批量应用到其他类似页面。  
 
@@ -10,6 +15,7 @@ domloader是一个模版加载对象。
 
 你可以到这里浏览domloader的实际应用。  
 同时也欢迎应用了domloader的作品在此展示。  
+
 [TMP.link - 一个临时文件中转站](http://tmp.link) 
 
 目前已经实现的功能：
@@ -18,7 +24,7 @@ domloader是一个模版加载对象。
 * 加载时显示进度条
 
 <p align="center">
-<img src="https://github.com/tmplink/domloader/blob/master/demo.png?raw=true"/>
+<img src="https://github.com/tmplink/domloader/blob/master/images/demo.png?raw=true"/>
 </p>
 
 # 队列加载
