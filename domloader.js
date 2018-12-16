@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v1.2
+ * v1.3
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -13,13 +13,14 @@ var domloader = {
     icon: false,
     id: 1,
     debug: true,
+    root : '',
 
     html: function (dom, path) {
         domloader.id++;
         domloader.log('Include::HTML::' + path);
         domloader.queue.push(
                 function () {
-                    $.get(path, function (response) {
+                    $.get(domloader.root + path, function (response) {
                         $(dom).replaceWith(response);
                         domloader.load(path);
                     }, 'text');
@@ -32,7 +33,7 @@ var domloader = {
         domloader.queue.push(
                 function () {
                     domloader.id++;
-                    $('head').append("<link async id=\"domloader_" + domloader.id + "\" rel=\"stylesheet\" href=\"" + path + "\" >\n");
+                    $('head').append("<link async id=\"domloader_" + domloader.id + "\" rel=\"stylesheet\" href=\"" + domloader.root + path + "\" >\n");
                     $('#domloader_' + domloader.id).ready(function () {
                         domloader.load(path);
                     });
@@ -44,7 +45,7 @@ var domloader = {
         domloader.log('Include::JS::' + path);
         domloader.queue.push(
                 function () {
-                    $.get(path, function (response) {
+                    $.get(domloader.root + path, function (response) {
                         domloader.id++;
                         $('body').append("<script id=\"domloader_" + domloader.id + "\" type=\"text/javascript\">\n" + response + "</script>\n");
                         domloader.load(path);
@@ -92,7 +93,7 @@ var domloader = {
             $('#domloader_loading_show').append('<style>.progress {width: 180px;background: #ddd;margin-right:auto;margin-left:auto;}.curRate {width: 0%;background: #f30;}.round-conner {height: 10px;border-radius: 15px;}</style>');
             domloader.log('Page ready.Domloader start.');
             domloader.load();
-        }
+        };
     },
 
     log: function (msg) {
@@ -100,4 +101,4 @@ var domloader = {
             console.log(msg);
         }
     }
-}
+};
