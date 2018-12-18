@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v1.3
+ * v1.4
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -8,19 +8,21 @@
 
 var domloader = {
     queue: [],
+    after_queue: [],
+    version: 0,
     progressbar: true,
     total: 0,
     icon: false,
     id: 1,
     debug: true,
-    root : '',
+    root: '',
 
     html: function (dom, path) {
         domloader.id++;
         domloader.log('Include::HTML::' + path);
         domloader.queue.push(
                 function () {
-                    $.get(domloader.root + path, function (response) {
+                    $.get(domloader.root + path, {v: domloader.version}, function (response) {
                         $(dom).replaceWith(response);
                         domloader.load(path);
                     }, 'text');
@@ -45,7 +47,7 @@ var domloader = {
         domloader.log('Include::JS::' + path);
         domloader.queue.push(
                 function () {
-                    $.get(domloader.root + path, function (response) {
+                    $.get(domloader.root + path, {v: domloader.version}, function (response) {
                         domloader.id++;
                         $('body').append("<script id=\"domloader_" + domloader.id + "\" type=\"text/javascript\">\n" + response + "</script>\n");
                         domloader.load(path);
@@ -57,6 +59,15 @@ var domloader = {
     load: function (src) {
         $('body').css('overflow', 'hidden');
         if (domloader.queue.length === 0) {
+
+            if (domloader.after_queue.length !== 0) {
+                var cb = null;
+                for (cb in domloader.after_queue) {
+                    domloader.after_queue[cb]();
+                }
+            }
+
+
             if (domloader.progressbar === false) {
                 $('#domloader_loading_show').fadeOut(100);
                 $('#domloader_loading_bg').fadeOut(100);
@@ -79,6 +90,11 @@ var domloader = {
         if (typeof (fn) === 'function') {
             fn();
         }
+    },
+
+    onload: function (cb) {
+        domloader.log('Add::OnLoad ballback');
+        domloader.after_queue.push(cb);
     },
 
     init: function () {

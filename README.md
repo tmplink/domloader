@@ -88,11 +88,27 @@ domloader.css(path);
 domloader.js(path);
 ```
 
-设置网站根目录
+设置网站根目录  
 如果你要把整个前端项目放在子目录，那么这个设置可以确保正确加载资源。    
 一旦设置了此参数，每次加载时都会在地址前附加此参数。   
 ```javascript
 domloader.root = 'https://yourwebsite.com/subdir/';
+```
+
+设置资源文件版本号  
+可以解决由于浏览器缓存导致的资源更新不及时问题。    
+一旦设置了此参数，每次加载时都会在地址后附加此参数。   
+```javascript
+domloader.version = 'v1.0';
+```
+
+设置加载完成后的回调操作  
+有一些操作必须要在所有资源加载完成之后进行。    
+onload方法允许你设置一系列回调，将会在domloader加载完所有资源文件后启动这个回调。   
+```javascript
+domloader.onload(
+    function(){ xxx.xxx(); }
+); 
 ```
 
 设置加载页面的icon    
