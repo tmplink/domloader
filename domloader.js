@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v1.4
+ * v1.5
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -101,9 +101,9 @@ var domloader = {
         window.onload = function () {
             $('head').append('<style>*, ::after, ::before {box-sizing: border-box;}</style>');
             $('body').append('<div id="domloader_loading_bg" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: white;z-index: 15000;"></div>');
-            $('body').append('<div id="domloader_loading_show" style="color: black;;z-index: 15001;width: 200px; height: 200px;position: absolute; left: 0;top: 0;right: 0;bottom: 0; margin: auto;"></div>');
+            $('#domloader_loading_bg').append('<div id="domloader_loading_show" style="color: black;;z-index: 15001;width: 200px; height: 200px;position: absolute; left: 0;top: 0;right: 0;bottom: 0; margin: auto;"></div>');
             if (domloader.icon !== false) {
-                $('#domloader_loading_show').append('<div style="text-align:center;margin-bottom:20px;"><img src="' + domloader.icon + '" style="vertical-align: middle;border-style: none;"/></div>');
+                $('#domloader_loading_show').append('<div style="text-align:center;margin-bottom:20px;"><img src="' + domloader.icon + '" style="vertical-align: middle;border-style: none;width:129px;height:129px;"/></div>');
             }
             $('#domloader_loading_show').append('<div class="progress round-conner"><div class="curRate round-conner"></div></div>');
             $('#domloader_loading_show').append('<style>.progress {width: 180px;background: #ddd;margin-right:auto;margin-left:auto;}.curRate {width: 0%;background: #f30;}.round-conner {height: 10px;border-radius: 15px;}</style>');
