@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v1.5
+ * v1.6
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -67,11 +67,11 @@ var domloader = {
                 }
             }
 
-
             if (domloader.progressbar === false) {
                 $('#domloader_loading_show').fadeOut(100);
                 $('#domloader_loading_bg').fadeOut(100);
                 $('body').css('overflow', '');
+                this.autofix();
             }
         } else {
             if (domloader.progressbar) {
@@ -95,6 +95,24 @@ var domloader = {
     onload: function (cb) {
         domloader.log('Add::OnLoad ballback');
         domloader.after_queue.push(cb);
+    },
+    
+    autofix: function(){
+        if(domloader.root!==''){
+            $('[data-dl-root]').each(function(){
+                var autofixer = $(this).attr("data-dl-root");
+                var src       = $(this).attr("src");
+                var href      = $(this).attr("href");
+                if(autofixer==='true'&& src !== undefined && src !== null){
+                    $(this).attr("src",domloader.root + src);
+                    $(this).attr("data-dl-root",'false');
+                }
+                if(autofixer==='true'&& href !== undefined && href !== null){
+                    $(this).attr("href",domloader.root + href);
+                    $(this).attr("data-dl-root",'false');
+                }
+            });
+        }
     },
 
     init: function () {
