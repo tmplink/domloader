@@ -20,8 +20,10 @@ domloader是一个模版加载小工具，帮助你简单地构建前后端分�
 
 目前已经实现的功能：
 * 加载html，css以及js
-* 可以设置一个加载进度界面的图标（可以是你网站的Logo）
+* 可以设置一个加载进度界面的图标
 * 加载时显示进度条
+* 自动前缀修正，解决项目中的各种路径问题
+* 回调设置，加载资源文件完成后执行回调
 
 <p align="center">
 <img src="https://github.com/tmplink/domloader/blob/master/images/demo.png?raw=true"/>
