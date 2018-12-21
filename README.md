@@ -95,6 +95,18 @@ domloader.js(path);
 domloader.root = 'https://yourwebsite.com/subdir/';
 ```
 
+自动前缀修正  
+此功能需要配合设置网站根目录一起使用。
+当通过 domloader.root 设置了网站根目录时，在任意含有 src 或 href 的元素中增加 data-dl-root 属性，并设置为 true时，这个元素的 src 或 href 属性的值，会在 domloader 加载资源文件完成时得到自动修正。
+```html
+<script>
+domloader.root = 'https://yourwebsite.com/subdir/';
+</script>
+<a data-dl-root="true" href="page/about.html">关于我们</a>
+<!--[下面的代码是自动前缀修正后的代码]-->
+<a data-dl-root="false" href="https://yourwebsite.com/subdir/page/about.html">关于我们</a>
+```
+
 设置资源文件版本号  
 可以解决由于浏览器缓存导致的资源更新不及时问题。    
 一旦设置了此参数，每次加载时都会在地址后附加此参数。   
