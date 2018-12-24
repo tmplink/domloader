@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v1.6
+ * v1.8
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -8,7 +8,9 @@
 
 var domloader = {
     queue: [],
-    after_queue: [],
+    queue_after: [],
+    queue_preload: [],
+    loading_page: false,
     version: 0,
     progressbar: true,
     total: 0,
@@ -30,12 +32,25 @@ var domloader = {
         );
     },
 
+    preload: function (path) {
+        domloader.id++;
+        domloader.log('Preload::' + path);
+        domloader.queue_preload.push(
+                function () {
+                    $.get(domloader.root + path, {v: Date.now()}, function (response) {
+                        $('head').append(response);
+                        domloader.load(path);
+                    }, 'text');
+                }
+        );
+    },
+
     css: function (path) {
         domloader.log('Include::CSS::' + path);
         domloader.queue.push(
                 function () {
                     domloader.id++;
-                    $('head').append("<link async id=\"domloader_" + domloader.id + "\" rel=\"stylesheet\" href=\"" + domloader.root + path + "\" >\n");
+                    $('head').append("<link async id=\"domloader_" + domloader.id + "\" rel=\"stylesheet\" href=\"" + domloader.root + path + '?version=' + domloader.version + "\" >\n");
                     $('#domloader_' + domloader.id).ready(function () {
                         domloader.load(path);
                     });
@@ -57,13 +72,20 @@ var domloader = {
     },
 
     load: function (src) {
-        $('body').css('overflow', 'hidden');
+        if (domloader.queue_preload.length !== 0) {
+            var fn = domloader.queue_preload.shift();
+            if (typeof (fn) === 'function') {
+                fn();
+            }
+            return false;
+        } else {
+            this.init_loading_page();
+        }
         if (domloader.queue.length === 0) {
-
-            if (domloader.after_queue.length !== 0) {
+            if (domloader.queue_after.length !== 0) {
                 var cb = null;
-                for (cb in domloader.after_queue) {
-                    domloader.after_queue[cb]();
+                for (cb in domloader.queue_after) {
+                    domloader.queue_after[cb]();
                 }
             }
 
@@ -83,7 +105,7 @@ var domloader = {
         }
         if (typeof (src) !== 'undefined') {
             var percent = Math.ceil((this.total - this.queue.length) / this.total * 100);
-            $('.curRate').animate({'width': percent + '%'}, 100);
+            $('.domloader_curRate').animate({'width': percent + '%'}, 100);
             domloader.log("Loaded::" + src);
         }
         var fn = domloader.queue.shift();
@@ -93,41 +115,52 @@ var domloader = {
     },
 
     onload: function (cb) {
-        domloader.log('Add::OnLoad ballback');
-        domloader.after_queue.push(cb);
+        domloader.log('Add::OnLoad callback');
+        domloader.queue_after.push(cb);
     },
-    
-    autofix: function(){
-        if(domloader.root!==''){
-            $('[data-dl-root]').each(function(){
+
+    autofix: function () {
+        if (domloader.root !== '') {
+            $('[data-dl-root]').each(function () {
                 var autofixer = $(this).attr("data-dl-root");
-                var src       = $(this).attr("src");
-                var href      = $(this).attr("href");
-                if(autofixer==='true'&& src !== undefined && src !== null){
-                    $(this).attr("src",domloader.root + src);
-                    $(this).attr("data-dl-root",'false');
+                var src = $(this).attr("src");
+                var href = $(this).attr("href");
+                if (autofixer === 'true' && src !== undefined && src !== null) {
+                    $(this).attr("src", domloader.root + src);
+                    $(this).attr("data-dl-root", 'false');
                 }
-                if(autofixer==='true'&& href !== undefined && href !== null){
-                    $(this).attr("href",domloader.root + href);
-                    $(this).attr("data-dl-root",'false');
+                if (autofixer === 'true' && href !== undefined && href !== null) {
+                    $(this).attr("href", domloader.root + href);
+                    $(this).attr("data-dl-root", 'false');
                 }
             });
         }
     },
 
     init: function () {
+        $('body').ready(function(){
+            $('body').css('overflow', 'hidden');
+            $('body').append('<div id="domloader_loading_bg"></div>');
+        });
         window.onload = function () {
-            $('head').append('<style>*, ::after, ::before {box-sizing: border-box;}</style>');
-            $('body').append('<div id="domloader_loading_bg" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: white;z-index: 15000;"></div>');
-            $('#domloader_loading_bg').append('<div id="domloader_loading_show" style="color: black;;z-index: 15001;width: 200px; height: 200px;position: absolute; left: 0;top: 0;right: 0;bottom: 0; margin: auto;"></div>');
-            if (domloader.icon !== false) {
-                $('#domloader_loading_show').append('<div style="text-align:center;margin-bottom:20px;"><img src="' + domloader.icon + '" style="vertical-align: middle;border-style: none;width:129px;height:129px;"/></div>');
-            }
-            $('#domloader_loading_show').append('<div class="progress round-conner"><div class="curRate round-conner"></div></div>');
-            $('#domloader_loading_show').append('<style>.progress {width: 180px;background: #ddd;margin-right:auto;margin-left:auto;}.curRate {width: 0%;background: #f30;}.round-conner {height: 10px;border-radius: 15px;}</style>');
             domloader.log('Page ready.Domloader start.');
             domloader.load();
         };
+    },
+
+    init_loading_page: function () {
+        if (this.loading_page === false) {
+            $('#domloader_loading_bg').append('<div id="domloader_loading_show"></div>');
+            if (domloader.icon !== false) {
+                $('#domloader_loading_show').append('<div style="text-align:center;margin-bottom:20px;"><img src="' + domloader.icon + '" style="vertical-align: middle;border-style: none;width:129px;height:129px;"/></div>');
+            }
+            $('#domloader_loading_show').append('<div class="domloader_progress domloader_round_conner"><div class="domloader_curRate domloader_round_conner"></div></div>');
+            $('body').show();
+            $('#domloader_loading_show').fadeIn(500);
+            this.loading_page = true;
+        } else {
+            return false;
+        }
     },
 
     log: function (msg) {

@@ -16,7 +16,8 @@ domloader是一个模版加载小工具，帮助你简单地构建前后端分�
 你可以到这里浏览domloader的实际应用。  
 同时也欢迎应用了domloader的作品在此展示。  
 
-[TMP.link - 一个临时文件中转站](http://tmp.link) 
+* [TMP.link - 一个临时文件中转站](http://tmp.link)   
+* [Bootstrap 4 简体中文文档](http://bs4.vx.link) 
 
 目前已经实现的功能：
 * 加载html，css以及js
@@ -48,6 +49,7 @@ domloader的核心功能需要jQuery支持才能实现，因此在使用domloade
 
 ```html
 <script src="domloader.js"></script>
+<link href="domloader.css" rel="stylesheet"/>
 ````
 
 通常建议在页面的head部分加入domload的执行代码，以确保domloader可以优先运行。  
@@ -80,6 +82,14 @@ domloader.html(dom,path);
     <div id="head"></div>
   </body>
 </html>
+```
+
+预加载文件
+预加载功能优先于所有资源文件，会在页面加载后立即执行预加载功能，将代码插入到head后方。  
+所有预加载资源不会受到浏览器缓存的影响，均为无缓存（重点）。  
+因此预加载功能通常用来加载一些配置信息，比如定义了 version 参数的配置文件。
+```javascript
+domloader.preload(path);
 ```
 
 加载CSS和JS文件  
