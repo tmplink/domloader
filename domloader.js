@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v1.8
+ * v1.9
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -90,9 +90,6 @@ var domloader = {
             }
 
             if (domloader.progressbar === false) {
-                $('#domloader_loading_show').fadeOut(100);
-                $('#domloader_loading_bg').fadeOut(100);
-                $('body').css('overflow', '');
                 this.autofix();
             }
         } else {
@@ -105,7 +102,13 @@ var domloader = {
         }
         if (typeof (src) !== 'undefined') {
             var percent = Math.ceil((this.total - this.queue.length) / this.total * 100);
-            $('.domloader_curRate').animate({'width': percent + '%'}, 100);
+            $('.domloader_curRate').animate({'width': percent + '%'}, 100, function () {
+                if (percent === 100) {
+                    $('#domloader_loading_show').fadeOut(300);
+                    $('#domloader_loading_bg').fadeOut(300);
+                    $('body').css('overflow', '');
+                }
+            });
             domloader.log("Loaded::" + src);
         }
         var fn = domloader.queue.shift();
@@ -138,7 +141,7 @@ var domloader = {
     },
 
     init: function () {
-        $('body').ready(function(){
+        $('body').ready(function () {
             $('body').css('overflow', 'hidden');
             $('body').append('<div id="domloader_loading_bg"></div>');
         });
