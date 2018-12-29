@@ -71,7 +71,7 @@ The following code will download the contents of header.html when the page is re
 
 ```html
 <html>
-  <head>
+  "head"
     <title>domloader demo</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="domloader.js"></script>
@@ -87,7 +87,7 @@ The following code will download the contents of header.html when the page is re
 ```
 
 ## Preload file   
-The preload feature takes precedence over all resource files and performs a preload function immediately after the page loads, inserting the code behind the <head>.  
+The preload feature takes precedence over all resource files and performs a preload function immediately after the page loads, inserting the code behind the "head".  
 All preloaded resources are not cached by the browser.  
 The preload function is used to load some configuration files, such as a configuration file that defines the version parameter.  
 
@@ -96,7 +96,7 @@ domloader.preload(path);
 ```
 
 ## Load CSS and JS files   
-For CSS files, the domloader inserts it into the end of the <head> in order, as an external style sheet.  
+For CSS files, the domloader inserts it into the end of the "head" in order, as an external style sheet.  
 For JS files, the domloader will download the JS content in order, and insert the js content into the end of the <body> in the way of the script tag embedding.  
 
 ```javascript
@@ -132,9 +132,9 @@ Once this parameter is set, this parameter is appended to the resource file addr
 domloader.version = 'v1.0';
 ```
 
-## Set the callback operation after loading is complete   
-There are some operations that must be done after all resources have been loaded.   
-The onload method allows you to set a series of callbacks that will be started after the domloader has loaded all the resource files.   
+## Set the callback after loading is complete   
+There are some functions that must be done after all resources have been loaded.   
+The onload method allows you to set a queue of callbacks that will be started after the domloader has loaded all the resource files.   
 ```javascript
 domloader.onload(
     function(){ xxx.xxx(); }
