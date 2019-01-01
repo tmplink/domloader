@@ -1,12 +1,12 @@
 /*!
  * domloader.css
- * v1.8
+ * v2.0
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
  */
 body{
-    display:none;
+    visibility:hidden;
 }
 #domloader_loading_bg{
     position: fixed;
