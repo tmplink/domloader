@@ -147,6 +147,13 @@ If you don't set this, only the progress bar will be displayed when loading.
 domloader.icon = '/yourlogo.png';
 ```
 
+## Set total animation time of loading progress bar
+If all files have been loaded, the time of the progress bar animation will be limited to this value.
+Default : 500ms   
+```javascript
+domloader.animation_time = 500;
+```
+
 ## Display console debugging information
 Domloader.debug Controls whether debugging information is loaded in the console output. The default is on, you can set this to false to block this information.
  

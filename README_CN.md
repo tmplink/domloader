@@ -141,6 +141,13 @@ domloader.onload(
 domloader.icon = '/yourlogo.png';
 ```
 
+## 控制加载页面的进度条时间    
+此参数控制进度条动画总时间，即如果所有文件都为就绪状态，进度条跑完的时间。   
+默认值为500ms   
+```javascript
+domloader.animation_time = 500;
+```
+
 ## 显示控制台调试信息  
 domloader.debug 控制是否在控制台输出加载调试信息。默认是打开的，你可以设置为false来屏蔽这些信息。  
 ```javascript
