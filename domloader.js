@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v2.0
+ * v2.1
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -10,8 +10,6 @@ var domloader = {
     queue: [],
     queue_after: [],
     queue_preload: [],
-    queue_preload_cmd: [],
-    preload_on: false,
     loading_page: false,
     version: 0,
     progressbar: true,
@@ -20,6 +18,21 @@ var domloader = {
     id: 1,
     debug: true,
     root: '',
+    animation_time : 500,
+    animation_stime : 0,
+
+    html: function (dom, path) {
+        domloader.id++;
+        domloader.log('Include::HTML::' + path);
+        domloader.queue.push(
+                function () {
+                    $.get(domloader.root + path, {v: domloader.version}, function (response) {
+                        $(dom).replaceWith(response);
+                        domloader.load(path);
+                    }, 'text');
+                }
+        );
+    },
 
     preload: function (path) {
         domloader.id++;
@@ -27,61 +40,37 @@ var domloader = {
         domloader.queue_preload.push(
                 function () {
                     $.get(domloader.root + path, {v: Date.now()}, function (response) {
-                        domloader.preload_on = true;
                         $('head').append(response);
-                        domloader.preload_on = false;
                         domloader.load(path);
                     }, 'text');
                 }
         );
     },
 
-    html: function (dom, path) {
-        var callback = function () {
-            domloader.id++;
-            $.get(domloader.root + path, {v: domloader.version}, function (response) {
-                $(dom).replaceWith(response);
-                domloader.load(path);
-            }, 'text');
-        };
-        if (domloader.preload_on) {
-            domloader.queue_preload_cmd.push(callback);
-        } else {
-            domloader.queue.push(callback);
-        }
-        domloader.log('Include::HTML::' + path);
-    },
-
     css: function (path) {
-        var callback = function () {
-            domloader.id++;
-            $('head').append("<link async id=\"domloader_" + domloader.id + "\" rel=\"stylesheet\" href=\"" + domloader.root + path + '?version=' + domloader.version + "\" >\n");
-            $('#domloader_' + domloader.id).ready(function () {
-                domloader.load(path);
-            });
-        };
-        if (domloader.preload_on) {
-            domloader.queue_preload_cmd.push(callback);
-        } else {
-            domloader.queue.push(callback);
-        }
         domloader.log('Include::CSS::' + path);
+        domloader.queue.push(
+                function () {
+                    domloader.id++;
+                    $('head').append("<link async id=\"domloader_" + domloader.id + "\" rel=\"stylesheet\" href=\"" + domloader.root + path + '?version=' + domloader.version + "\" >\n");
+                    $('#domloader_' + domloader.id).ready(function () {
+                        domloader.load(path);
+                    });
+                }
+        );
     },
 
     js: function (path) {
-        var callback = function () {
-            $.get(domloader.root + path, {v: domloader.version}, function (response) {
-                domloader.id++;
-                $('body').append("<script id=\"domloader_" + domloader.id + "\" type=\"text/javascript\">\n" + response + "</script>\n");
-                domloader.load(path);
-            }, 'text');
-        };
-        if (domloader.preload_on) {
-            domloader.queue_preload_cmd.push(callback);
-        } else {
-            domloader.queue.push(callback);
-        }
         domloader.log('Include::JS::' + path);
+        domloader.queue.push(
+                function () {
+                    $.get(domloader.root + path, {v: domloader.version}, function (response) {
+                        domloader.id++;
+                        $('body').append("<script id=\"domloader_" + domloader.id + "\" type=\"text/javascript\">\n" + response + "</script>\n");
+                        domloader.load(path);
+                    }, 'text');
+                }
+        );
     },
 
     load: function (src) {
@@ -92,10 +81,6 @@ var domloader = {
             }
             return false;
         } else {
-            if (this.queue_preload_cmd.length !== 0) {
-                this.queue = this.queue_preload_cmd.concat(this.queue);
-                this.queue_preload_cmd = [];
-            }
             this.init_loading_page();
         }
         if (domloader.queue.length === 0) {
@@ -119,7 +104,7 @@ var domloader = {
         }
         if (typeof (src) !== 'undefined') {
             var percent = Math.ceil((this.total - this.queue.length) / this.total * 100);
-            $('.domloader_curRate').animate({'width': percent + '%'}, 100, function () {
+            $('.domloader_curRate').animate({'width': percent + '%'}, this.animation_stime, function () {
                 if (percent === 100) {
                     $('#domloader_loading_show').fadeOut(300);
                     $('#domloader_loading_bg').fadeOut(300);
@@ -167,15 +152,25 @@ var domloader = {
             domloader.load();
         };
     },
+    
+    animation_slice : function(){
+        if(this.queue.length > 1){
+            this.animation_stime = Math.ceil(this.animation_time/this.queue.length);
+        }else{
+            this.animation_stime = this.animation_time;
+        }
+        console.log('Animation slice time: '+this.animation_stime+' ,total: '+this.animation_time);
+    },
 
     init_loading_page: function () {
         if (this.loading_page === false) {
+            domloader.animation_slice();
             $('#domloader_loading_bg').append('<div id="domloader_loading_show"></div>');
             if (domloader.icon !== false) {
                 $('#domloader_loading_show').append('<div style="text-align:center;margin-bottom:20px;"><img src="' + domloader.icon + '" style="vertical-align: middle;border-style: none;width:129px;height:129px;"/></div>');
             }
             $('#domloader_loading_show').append('<div class="domloader_progress domloader_round_conner"><div class="domloader_curRate domloader_round_conner"></div></div>');
-            $('body').css('visibility', 'visible');
+            $('body').css('visibility','visible');
             $('#domloader_loading_show').fadeIn(500);
             this.loading_page = true;
         } else {
