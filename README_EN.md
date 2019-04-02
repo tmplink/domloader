@@ -30,6 +30,10 @@ Features：
 <img src="https://github.com/tmplink/domloader/blob/master/images/demo.png?raw=true"/>
 </p>
 
+# Upgrade
+The domloader consists of domloader.js  and domloader.css , totaling about 12 kb.  
+Each time you upgrade your version, you only need to overwrite the two files in the latest version.  
+
 # Queue loading
 In order to ensure that the page function is not confusing, the domloader will queue the preset content (the browser usually loads the page resources concurrently).  
 This method may slightly slow down the page loading time on the first visit, and then complete it in a short time.   
@@ -152,6 +156,13 @@ If all files have been loaded, the time of the progress bar animation will be li
 Default : 500ms   
 ```javascript
 domloader.animation_time = 500;
+```
+
+## Disable  animation
+The progress bar is not displayed when the resource is loading.  
+Default : true   
+```javascript
+domloader.animation = true;
 ```
 
 ## Display console debugging information
