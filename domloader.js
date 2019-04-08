@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v2.2
+ * v2.3
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -8,6 +8,7 @@
 
 var domloader = {
     queue: [],
+    queue_async:[],
     queue_after: [],
     queue_preload: [],
     loading_page: false,
@@ -21,19 +22,6 @@ var domloader = {
     animation: true,
     animation_time: 500,
     animation_stime: 0,
-
-    html: function (dom, path) {
-        domloader.id++;
-        domloader.log('Include::HTML::' + path);
-        domloader.queue.push(
-                function () {
-                    $.get(domloader.root + path, {v: domloader.version}, function (response) {
-                        $(dom).replaceWith(response);
-                        domloader.load(path);
-                    }, 'text');
-                }
-        );
-    },
 
     preload: function (path) {
         domloader.id++;
@@ -57,6 +45,19 @@ var domloader = {
                     $('#domloader_' + domloader.id).ready(function () {
                         domloader.load(path);
                     });
+                }
+        );
+    },
+    
+    html: function (dom, path) {
+        domloader.id++;
+        domloader.log('Include::HTML::' + path);
+        domloader.queue_async.push(
+                function () {
+                    domloader.load(path);
+                    $.get(domloader.root + path, {v: domloader.version}, function (response) {
+                        $(dom).replaceWith(response);
+                    }, 'text');
                 }
         );
     },
@@ -84,7 +85,7 @@ var domloader = {
         } else {
             this.init_loading_page();
         }
-        if (domloader.queue.length === 0) {
+        if (domloader.queue.length === 0 && domloader.queue_async.length === 0) {
             if (domloader.queue_after.length !== 0) {
                 var cb = null;
                 for (cb in domloader.queue_after) {
@@ -95,6 +96,7 @@ var domloader = {
             if (domloader.progressbar === false) {
                 this.autofix();
             }
+            
         } else {
             if (domloader.progressbar) {
                 domloader.total = domloader.queue.length;
@@ -104,7 +106,7 @@ var domloader = {
             }
         }
         if (typeof (src) !== 'undefined') {
-            var percent = Math.ceil((this.total - this.queue.length) / this.total * 100);
+            var percent = Math.ceil((this.total - (this.queue.length+this.queue_async.length)) / this.total * 100);
             if (domloader.animation) {
                 $('.domloader_curRate').animate({'width': percent + '%'}, this.animation_stime, function () {
                     if (percent === 100) {
@@ -122,6 +124,13 @@ var domloader = {
             }
 
             domloader.log("Loaded::" + src);
+        }
+        if (domloader.queue_async.length !== 0) {
+            var fn = domloader.queue_async.shift();
+            if (typeof (fn) === 'function') {
+                fn();
+            }
+            return true;
         }
         var fn = domloader.queue.shift();
         if (typeof (fn) === 'function') {
@@ -164,8 +173,8 @@ var domloader = {
     },
 
     animation_slice: function () {
-        if (this.queue.length > 1) {
-            this.animation_stime = Math.ceil(this.animation_time / this.queue.length);
+        if ((this.queue.length+this.queue_async.length) > 1) {
+            this.animation_stime = Math.ceil(this.animation_time / (this.queue.length+this.queue_async.length));
         } else {
             this.animation_stime = this.animation_time;
         }
