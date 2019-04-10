@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v3
+ * v3.1
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -45,12 +45,12 @@ var domloader = {
             function () {
                 $.get(domloader.root + path, {v: domloader.version}, function () {
                     domloader.async();
-                }, 'text');
+                });
             },
             function () {
                 domloader.id++;
-                $.get(domloader.root + path, {v: domloader.version}, function () {
-                    $('head').append("<link async id=\"domloader_" + domloader.id + "\" rel=\"stylesheet\" href=\"" + domloader.root + path + '?version=' + domloader.version + "\" >\n");
+                $.get(domloader.root + path, {v: domloader.version}, function (response) {
+                    $('head').append("<style>"+response+"</style>\n");
                     domloader.sync();
                 }, 'text');
             }
@@ -64,9 +64,9 @@ var domloader = {
         this.log('Include::HTML::' + path);
         this.queue.push([
             function () {
-                $.get(domloader.root + path, {v: domloader.version}, function (response) {
+                $.get(domloader.root + path, {v: domloader.version}, function () {
                     domloader.async();
-                }, 'text');
+                });
             },
             function () {
                 $.get(domloader.root + path, {v: domloader.version}, function (response) {
@@ -83,9 +83,9 @@ var domloader = {
         this.log('Include::JS::' + path);
         this.queue.push([
             function () {
-                $.get(domloader.root + path, {v: domloader.version}, function (response) {
+                $.get(domloader.root + path, {v: domloader.version}, function () {
                     domloader.async();
-                }, 'text');
+                });
             },
             function () {
                 $.get(domloader.root + path, {v: domloader.version}, function (response) {
@@ -146,7 +146,6 @@ var domloader = {
     },
 
     sync: function () {
-        domloader.log(this.queue.length);
         if (this.queue.length !== 0) {
             var fn = this.queue.shift();
             fn[1]();
