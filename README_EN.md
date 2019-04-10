@@ -3,15 +3,10 @@
 </p>
 
 # Introduction
-Domloader is a template tool that helps you to easily build front-end website.   
-you can get started after reading this page, or even apply it to your existing project immediately.    
-You can modularize your front-end project just like any other hybrid html backend language(etc.. php).  
-For example, the page header and footer are extracted separately from the page body content to form a module and reference to other pages.    
-
-In addition, the domloader will display a loading interface when it loads.   
-The loading interface will cover the default loading process, like the app launcher interface on iOS.   
-Solve the problem of incomplete display due to slow network speed or a lot of page resources.   
-The loading progress is the real loading progress, not the simulation.  
+Domloader helps you build a modular, pure front-end project without the need for techniques such as react or vue.js.  
+There is no learning cost, no need to learn additional grammar, no compilation, just use native js is enough.  
+  
+With domloader, you can take apart the reusable parts of the page and reorganize them on other pages at any time. Just like PHP's include!   
 
 You can browse the applications built with domloader here.  
 Also welcome applications built with domloader are shown here.  
