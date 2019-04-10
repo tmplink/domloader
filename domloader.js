@@ -241,7 +241,7 @@ var domloader = {
 
     log: function (msg) {
         if (this.debug) {
-            domloader.log(msg);
+            console.log(msg);
         }
     }
 };
