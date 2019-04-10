@@ -10,6 +10,7 @@ var domloader = {
     queue: [],
     queue_count: 0,
     queue_total: 0,
+    queue_cache: [],
     queue_after: [],
     queue_preload: [],
     loading_page: false,
@@ -48,17 +49,13 @@ var domloader = {
                 });
             },
             function () {
-                domloader.id++;
-                $.get(domloader.root + path, {v: domloader.version}, function (response) {
-                    $('head').append("<style>"+response+"</style>\n");
-                    domloader.sync();
-                }, 'text');
+                $('head').append("<link rel=\"stylesheet\" href=\"" + domloader.root + path + '?version=' + domloader.version + "\" >\n");
+                domloader.sync();
             }
         ]);
     },
 
     html: function (dom, path) {
-        this.id++;
         this.queue_count++;
         this.queue_total++;
         this.log('Include::HTML::' + path);
@@ -89,15 +86,14 @@ var domloader = {
             },
             function () {
                 $.get(domloader.root + path, {v: domloader.version}, function (response) {
-                    domloader.id++;
-                    $('body').append("<script id=\"domloader_" + domloader.id + "\" type=\"text/javascript\">\n" + response + "</script>\n");
+                    $('body').append("<script type=\"text/javascript\">\n" + response + "</script>\n");
                     domloader.sync();
                 }, 'text');
             }
         ]);
     },
 
-    load: function (src) {
+    load: function () {
         if (this.queue_preload.length !== 0) {
             var fn = this.queue_preload.shift();
             if (typeof (fn) === 'function') {
