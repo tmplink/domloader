@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v3.1
+ * v3.3
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -44,12 +44,13 @@ var domloader = {
         this.log('Include::CSS::' + path);
         this.queue.push([
             function () {
-                $.get(domloader.root + path, {v: domloader.version}, function () {
+                domloader.id++;
+                $('head').append("<link rel=\"stylesheet\" id=\"css_dm_"+domloader.id+"\" href=\"" + domloader.root + path + '?version=' + domloader.version + "\" >\n");
+                $("#css_dm_"+domloader.id).ready(function () {
                     domloader.async();
                 });
             },
             function () {
-                $('head').append("<link rel=\"stylesheet\" href=\"" + domloader.root + path + '?version=' + domloader.version + "\" >\n");
                 domloader.sync();
             }
         ]);
@@ -195,14 +196,12 @@ var domloader = {
     },
 
     init: function () {
-        $('body').ready(function () {
+        $(function () {
             $('body').css('overflow', 'hidden');
             $('body').append('<div id="domloader_loading_bg"></div>');
-        });
-        window.onload = function () {
             domloader.log('Page ready.Domloader start.');
             domloader.load();
-        };
+        });
     },
 
     animation_slice: function () {
