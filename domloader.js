@@ -1,6 +1,6 @@
 /*!
  * domloader.js
- * v3.3
+ * v3.4
  * https://github.com/tmplink/domloader/
  * 
  * Licensed GPLv3 © TMPLINK STUDIO
@@ -41,12 +41,13 @@ var domloader = {
     css: function (path) {
         this.queue_count++;
         this.queue_total++;
-        this.log('Include::CSS::' + path);
         this.queue.push([
             function () {
+                domloader.log('Downloading::CSS::' + path);
                 domloader.id++;
                 $('head').append("<link rel=\"stylesheet\" id=\"css_dm_"+domloader.id+"\" href=\"" + domloader.root + path + '?version=' + domloader.version + "\" >\n");
                 $("#css_dm_"+domloader.id).ready(function () {
+                    domloader.log('Downloaded::CSS::' + path);
                     domloader.async();
                 });
             },
@@ -59,12 +60,13 @@ var domloader = {
     html: function (dom, path) {
         this.queue_count++;
         this.queue_total++;
-        this.log('Include::HTML::' + path);
         this.queue.push([
             function () {
+                domloader.log('Downloading::HTML::' + path);
                 $.get(domloader.root + path, {v: domloader.version}, function () {
+                    domloader.log('Downloaded::HTML::' + path);
                     domloader.async();
-                });
+                }, 'text');
             },
             function () {
                 $.get(domloader.root + path, {v: domloader.version}, function (response) {
@@ -78,12 +80,13 @@ var domloader = {
     js: function (path) {
         this.queue_count++;
         this.queue_total++;
-        this.log('Include::JS::' + path);
         this.queue.push([
             function () {
+                domloader.log('Downloading::JS::' + path);
                 $.get(domloader.root + path, {v: domloader.version}, function () {
+                    domloader.log('Downloaded::JS::' + path);
                     domloader.async();
-                });
+                }, 'text');
             },
             function () {
                 $.get(domloader.root + path, {v: domloader.version}, function (response) {
@@ -173,7 +176,7 @@ var domloader = {
     },
 
     onload: function (cb) {
-        domloader.log('Add::OnLoad callback');
+        domloader.log('Add::onLoad callback');
         domloader.queue_after.push(cb);
     },
 
